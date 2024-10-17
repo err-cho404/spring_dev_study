@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.yangdoll.persistence.BoardMapperTwo">
+<!-- 
+	<select id="getMultiConBoard" parameterType="int, String" resultType="kr.co.yangdoll.domain.SearchVO">
+		select * from boards where bno = #{searchNum} and title > #{searchTitle}
+	</select>
+ -->
+	<select id="getMultiConBoardTwo" parameterType="HashMap" resultType="kr.co.yangdoll.domain.BoardVO">
+		select * from boards where bno = #{searchNum} and title > #{searchTitle}
+	</select>	
+	
+	<select id="getMultiConBoardThree" parameterType="Map" resultType="kr.co.yangdoll.domain.BoardVO">
+		select * from boards where bno = #{searchNum} and title > #{searchTitle}
+	</select>	
+	
+	<!-- 동적쿼리 -->
+	<select id="getConditionWhereList" parameterType="HashMap" resultType="kr.co.yangdoll.domain.BoardVO">  
+		select * from boards
+			<if test="searchTitle != null">
+				<![CDATA[
+					where title > #{searchTitle}
+				]]>
+			</if>
+			<if test="searchNum != null">
+				<![CDATA[
+					where bno > #{searchNum}
+				]]>
+				<!-- where bno > #{searchNum} -->
+				<!-- and bno > #{searchNum} -->
+			</if>
+	</select>
+	<!-- select * from board , select * from board where Title > '아' -->
+	
+	<select id="getConditionTrimList" parameterType="HashMap" resultType="kr.co.yangdoll.domain.BoardVO"> 	
+		select * from boards
+		<trim prefix="where" prefixOverrides="and | or">  
+				<if test="searchTitle != null">
+					<![CDATA[
+						and title > #{searchTitle}
+					]]>
+				</if>
+				<if test="searchNum != null">
+					<![CDATA[
+						and bno > #{searchNum}
+					]]>
+				</if>
+		</trim>
+	</select>
+	
+	<select id="updateBoard" parameterType="kr.co.yangdoll.domain.BoardVO" > 
+		update boards
+		<trim prefix="set" prefixOverrides=",">
+			<if test="updatedate != null">
+			<![CDATA[
+				updatedate = sysdate ,
+			]]>
+			</if>
+			<if test="title != null">
+			<![CDATA[
+				title = #{title} ,
+			]]>
+			</if>
+			<if test="content != null">
+			<![CDATA[
+				 content = #{content},
+			]]>
+			</if>
+			<if test="writer != null">
+			<![CDATA[
+				 writer = #{writer},
+			]]>
+			</if>
+		</trim>
+		where bno = #{bno}
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

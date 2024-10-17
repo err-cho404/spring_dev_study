@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.yangdoll.persistence.BoardMapper">
+	
+	<insert id="insertBoard" parameterType="kr.co.yangdoll.domain.BoardVO">
+		insert into boards values (BOARDSQ.NEXTVAL,#{title},#{content},#{writer},sysdate,sysdate) 
+	</insert>
+	
+	<insert id="insertBoardGetBno" parameterType="kr.co.yangdoll.domain.BoardVO">
+		<selectKey keyProperty="bno" order="BEFORE" resultType="Integer"> <!-- 시퀀스 번호를 가져오고 싶을 때 -->
+			select BOARDSQ.NEXTVAL from dual
+		</selectKey>
+		insert into boards values (#{bno},#{title},#{content},#{writer},sysdate,sysdate)
+	</insert>
+<!-- 	
+	<delete id="deleteBoard" parameterType="Integer">
+		delete from boards where bno = #{bno}
+	</delete>
+	 -->	
+	<update id="updateBoard" parameterType="kr.co.yangdoll.domain.BoardVO">
+		update boards set updatedate = sysdate , title = #{title} , content = #{content}, writer = #{writer} where bno = #{bno}
+	</update>
+	
+	<select id="getCount" resultType="Integer">
+		select count(*) from boards
+	</select>
+	
+	<select id="getBoard"  parameterType="Integer" resultType="kr.co.yangdoll.domain.BoardVO">
+		select * from boards where bno = #{bno}
+	</select>
+	
+	<select id="getBoardList" parameterType="kr.co.yangdoll.util.PageInfoVO" resultType="kr.co.yangdoll.domain.BoardVO">
+		<![CDATA[ 
+		select bno,title, writer,updatedate from 
+    		(select /*+ INDEX_DESC(BOARDS BOARD_BNO_PK) */ rownum as rn, boards.* from boards WHERE rownum <= #{endList} )
+    		where rn > #{startList}
+		]]>
+	</select>
+
+</mapper>
