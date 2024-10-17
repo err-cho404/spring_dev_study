@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	<context:component-scan base-package="kr.co.yangdoll"></context:component-scan>
+	
+	<!-- 여기서 부터 데이터 베이스 작업(MyBatis-Spring을 이요한)과 관련된 설정 -->
+	<!-- hikariCP에서 제공한 데이버 베이스 연결(connection)관련 설정 -->
+	<bean class="com.zaxxer.hikari.HikariConfig" id="hikariConfig">
+		<property name="driverClassName" value="oracle.jdbc.OracleDriver"/>
+		<property name="jdbcUrl" value="jdbc:oracle:thin:@192.168.0.28:1521:orcl" />
+		<property name="username" value="choy" />
+		<property name="password" value="choy" />
+	</bean>
+	<bean class="com.zaxxer.hikari.HikariDataSource" id="dataSource" destroy-method="close">
+		<constructor-arg ref="hikariConfig"></constructor-arg>
+	</bean>
+	
+	<!-- MyBatis-Spring에서 제공한 라이브러리를 이용해서 DB CRUD타입을 쉽게 하기위한 설정 -->
+	<bean class="org.mybatis.spring.SqlSessionFactoryBean" id="sqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+<!-- 		<property name="configLocation" value="classpath:/config/mybatisConfig.xml"></property>
+		<property name="mapperLocations">
+			<list>
+				<value>classpath:/config/mapper/MemberMapper.xml</value>
+				<value>classpath:/config/mapper/AuthMapper.xml</value>
+			</list>
+		</property> 
+		이 부분이 제거되면 <mybatis-spring:scan>태그가 추가 되어 위의 property태그를 대신한다.-->
+	</bean>
+	<bean class="org.mybatis.spring.SqlSessionTemplate" id="sqlSession">
+		<constructor-arg ref="sqlSessionFactoryBean"></constructor-arg>
+	</bean>
+	<!--여기까지 데이터 베이스 작업과 관련된 설정  -->
+	<mybatis-spring:scan base-package="kr.co.yangdoll.mapper"/>
+	<!-- resources에 같은 형태의 폴더를 생성해야한다. -->
+	
+	
+	
+	
+	
+	
+	
+</beans>

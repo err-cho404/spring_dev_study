@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-5.8.xsd
+		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<!-- 	
+	<bean class="kr.co.yangdoll.security.CustomAccessDeniedHandler" id="accessDeniedHandler"></bean>
+	 -->
+	<!-- 	
+	<bean class="kr.co.yangdoll.security.MyCustomNoOpPwEncoder" id="userPwEncodeBean"></bean> 
+	-->
+	<security:http>
+		<security:intercept-url pattern="/sample/all" access="permitAll"/>
+		<security:intercept-url pattern="/sample/member" access="hasRole('ROLE_MEMBER')"/>
+		<security:intercept-url pattern="/sample/admin" access="hasRole('ROLE_ADMIN')"/>
+		<!-- 'ROLE_USER','ROLE_MEMBER','ROLE_ADMIN','ROLE_ANONYMOUS','ROLE_MANAGER' -->
+		<security:form-login login-page="/customLogin" authentication-success-handler-ref="successHandler"/>
+		<security:logout logout-url="/customLogout" invalidate-session="true" /> 
+		<!-- <security:access-denied-handler error-page="/accessError"/> -->
+		<security:access-denied-handler ref="customAccessDeniedHandler" />
+	</security:http>	
+	
+	<security:authentication-manager>
+<!--    데이터베이스 없이 사용자를 정의하고 로그인 할 경우 => 실무에서 없다. but 보안성이 가장 뛰어남,백도어를 만들때 사용
+      <security:authentication-provider>
+         <security:user-service>
+            <security:user name="member" password="{noop}member" authorities="ROLE_MEMBER"/>
+            <security:user name="yangdoll" password="{noop}yangdoll" authorities="ROLE_MEMBER,ROLE_ADMIN"/>
+         </security:user-service>
+      </security:authentication-provider>
+ -->
+ <!-- 데이터베이스에 등록된 정보로 로그인하고자 할 때 : jdbc방식으로 DB연결이 이루어질 때  
+       <security:authentication-provider>
+          <security:jdbc-user-service data-source-ref="dataSource"/>
+          <security:password-encoder ref="userPassEncodeBean" />기본은 Bcrypt방식 사용자 정의 방식(NoOpPasswordEncoder)으로 비번 암호화 하고자 할 때
+       </security:authentication-provider>
+     -->
+     <!--  데이터 베이스에 등록된 정보로 로그인하는데 ORM방식 -->
+        <security:authentication-provider user-service-ref="customUserDetailService">
+           <security:password-encoder ref="bcryptPasswordEncoder"/>
+        </security:authentication-provider>   
+   </security:authentication-manager>
+   <bean class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" id="bcryptPasswordEncoder" />
+
+</beans>
