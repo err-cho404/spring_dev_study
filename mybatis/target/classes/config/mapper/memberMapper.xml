@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="MemberMapper"> <!-- mapper를 구분하기 위한 이름 회사에서는 URL,패키지경로까지 써줌(구분을 위해) -->
+  <select id="selectAll" resultType="MemVO">
+    select * from Members 
+  </select>
+  <select id="selectGetId" parameterType="String" resultType="MemVO"> <!-- select 는 resultType 을 필요에 따라 사용-->
+  	select * from Members where memId = #{memId}
+  </select>
+  <insert id="insertMember"  parameterType="MemVO">
+  	insert into members values ( #{memId},#{memPwd},#{memName},#{memEmail},#{memAddr},sysdate,sysdate,1)
+  </insert> <!-- insert delete update 는 resultType 은 없다.(반환되는 타입이 고정되어있음)-->
+</mapper> 
+
+
+
