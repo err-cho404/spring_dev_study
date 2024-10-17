@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+	
+	<!-- 여기서 부터 데이터 베이스 작업과 관련된 설정 -->
+	<!-- spring-jdbc에서 제공한 데이버 베이스 연결(connection)관련 설정 -->
+	<bean class="org.springframework.jdbc.datasource.SimpleDriverDataSource" id="dataSource">
+		<property name="driverClass" value="oracle.jdbc.OracleDriver"></property>
+		<property name="url" value="jdbc:oracle:thin:@192.168.0.125:1521:orcl"></property>
+		<property name="username" value="choy"></property>
+		<property name="password" value="choy"></property>
+	</bean>
+	
+	<!-- 자바에서 선언할 때 쓰는 jdbcTemplate = new jdbcTemplate(); 와 같은 역할이다. -->
+	<!-- spring-jdbc에서 제공한 라이브러리를 이용해서 DB CRUD타입을 쉽게 하기위한 설정 -->
+	<bean class="org.springframework.jdbc.core.JdbcTemplate" id="jdbcTemplate">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>	
+	<bean class="kr.co.yangdoll.imsispring.Ccc" id="calcuService"></bean>
+	<!-- <bean class="kr.co.yangdoll.imsispring.Bbb" id="calcuService"></bean> -->
+	
+	<bean class="kr.co.yangdoll.imsispring.Aaa" id="aaa">
+		<property name="obj" ref="calcuService"></property>
+		<!-- <constructor-arg ref="bbb"></constructor-arg> -->
+	</bean>	
+	<!--여기까지 데이터 베이스 작업과 관련된 설정  -->
+	<context:component-scan base-package="kr.co.yangdoll"></context:component-scan>
+</beans>
