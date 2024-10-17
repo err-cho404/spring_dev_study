@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>HTML !DOCTYPE declaration</title>
+</head>
+<body>
+	<table>
+		<tr>
+			<th>아이디</th><th>이름</th><th>이메일</th>
+		</tr>
+		<tr th:each="member:${member}">
+			<td th:text=${member.memId}>아이디출력</td>
+			<td th:text=${member.memName}>이름출력</td>	
+			<td th:text=${member.email}>메일출력</td>	
+		</tr>
+	</table>
+</body>
+</html>
